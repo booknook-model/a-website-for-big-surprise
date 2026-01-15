@@ -94,29 +94,13 @@ button{
  z-index:50;
 }
 .panel{
- background:#fffdf5;
- border-radius:18px;
- padding:20px;
- width:min(300px, 90%);
- text-align:center;
+ background:#fffdf5;border-radius:18px;padding:20px;width:300px;text-align:center;
  border:3px dashed #e7d6a2;
  margin-top:-80px;
 }
 .scratch-wrapper{
- position:relative;
- width:100%;
- aspect-ratio:240/190;
- margin:0 auto;
- border-radius:12px;
- overflow:hidden;
+ position:relative;width:240px;height:190px;margin:0 auto;border-radius:12px;overflow:hidden;
 }
-#scratch,
-#prize,
-#proposalText {
- width:100% !important;
- height:100% !important;
-}
-
 #scratch.fadeout{transition:opacity 1s;opacity:0;}
 #proposalText{
  position:absolute;top:6px;width:100%;font-size:34px;font-family:'Great Vibes';
@@ -130,7 +114,7 @@ button{
  opacity:.9;filter:drop-shadow(0 0 8px #d4af37);animation:ringPulse 2s infinite;
 }
 @keyframes ringPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-#scratch{position:absolute;inset:0;touch-action:none;border-radius:12px;}
+#scratch{position:absolute;inset:0;touch-action:none;}
 .answers{
  margin-top:14px;display:flex;gap:10px;position:relative;
  transition:all .6s ease;
@@ -172,13 +156,6 @@ button{
  margin-top:10px;
  border-radius:12px;
 }
-
-/* --- Mobil uyum --- */
-@media(max-width: 420px){
-  h1{font-size:26px;}
-  .subtitle{font-size:14px;}
-  canvas#wheel{width:260px;height:260px;}
-}
 </style>
 </head>
 
@@ -204,7 +181,7 @@ button{
 
 <div class="overlay" id="overlay">
  <div class="panel">
-  <div id="hintText">Sürpriz Hediye için alanı kazı!</div>
+  <div id="hintText">Sürpriz Hediye için alanı kazı! 🎁</div>
   <div class="scratch-wrapper">
    <div id="proposalText">Benimle evlenir misin?</div>
    <div id="prize">💍</div>
@@ -233,7 +210,8 @@ const answers=document.getElementById("answers");
 const noBtn=document.getElementById("noBtn");
 const yesBtn=document.getElementById("yesBtn");
 
-let giftRain=setInterval(()=>{
+let giftRain;
+giftRain = setInterval(()=>{
  const icons=["🎁","✨","🎊","🎉","🎀","🎈"];
  const e=document.createElement("div");
  e.className="drop";
@@ -259,11 +237,11 @@ function fixCanvas(c){
 const canvas=document.getElementById("wheel");
 const ctx=fixCanvas(canvas);
 const R=150;
-const colors={"100 TL Kupon":"#B5EAD7","250 TL Kupon":"#C7CEEA","500 TL Kupon":"#FFDAC1","1000 TL Kupon":"#FFB7B2","SÜRPRİZ HEDİYE":"#F7E6A6"};
+const colors={"50 TL Kupon":"#B5EAD7","100 TL Kupon":"#C7CEEA","200 TL Kupon":"#FFDAC1","300 TL Kupon":"#FFB7B2","SÜRPRİZ HEDİYE":"#F7E6A6"};
 const prizes=[
- {text:"250 TL Kupon",weight:12},{text:"100 TL Kupon",weight:18},{text:"500 TL Kupon",weight:10},
- {text:"250 TL Kupon",weight:12},{text:"100 TL Kupon",weight:18},{text:"SÜRPRİZ HEDİYE",weight:5},
- {text:"100 TL Kupon",weight:18},{text:"250 TL Kupon",weight:12},{text:"1000 TL Kupon",weight:8},{text:"100 TL Kupon",weight:18}
+ {text:"100 TL Kupon",weight:12},{text:"50 TL Kupon",weight:18},{text:"200 TL Kupon",weight:10},
+ {text:"100 TL Kupon",weight:12},{text:"50 TL Kupon",weight:18},{text:"SÜRPRİZ HEDİYE",weight:5},
+ {text:"50 TL Kupon",weight:18},{text:"100 TL Kupon",weight:12},{text:"300 TL Kupon",weight:8},{text:"50 TL Kupon",weight:18}
 ];
 const totalWeight=prizes.reduce((a,b)=>a+b.weight,0);
 let startAngle=0;
@@ -286,18 +264,18 @@ spinBtn.onclick=()=>{
  const i=prizes.findIndex(p=>p.text.includes("SÜRPRİZ"));
  const before=prizes.slice(0,i).reduce((a,b)=>a+b.weight,0);
  const mid=((before+prizes[i].weight/2)/totalWeight)*360;
- canvas.style.transition="transform 11.5s cubic-bezier(.04,.9,.15,1)";
+ 
+ //  ⬇⬇⬇ TEK DEĞİŞEN SATIR (daha yavaş fren)
+ canvas.style.transition="transform 12s cubic-bezier(.03,.95,.25,1)";
+
  canvas.style.transform=`rotate(${7.5*360+(90-mid)}deg)`;
- setTimeout(()=>{overlay.style.display="flex";initScratch();},11500);
+ setTimeout(()=>{overlay.style.display="flex";initScratch();},12000);
 };
 
 function initScratch(){
  const sc=document.getElementById("scratch");
-
- sc.width=sc.clientWidth;
- sc.height=sc.clientHeight;
-
  const sctx=fixCanvas(sc);
+ sc.width=240;sc.height=190;
  sctx.fillStyle="#bbb";sctx.fillRect(0,0,sc.width,sc.height);
  sctx.globalCompositeOperation="destination-out";
  let drawing=false,revealed=false;
