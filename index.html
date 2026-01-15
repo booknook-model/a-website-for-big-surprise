@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<title>Book Nook - Promosyon Çark</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+  background:#f3f3f3;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+.floatingBrand{
+  font-family: "Pinyon Script", cursive;
+  font-size:72px;
+  letter-spacing:1px;
+  color:#6c4b2f;
+  text-shadow:0 2px 6px rgba(0,0,0,.15);
+  position:absolute;
+  top:60px;
+  width:100%;
+  text-align:center;
+  pointer-events:none;
+  z-index:20;
+}
+.screen,.panel,#finalScreen{
+  z-index:3;
+  position:relative;
+}
+.screen{
+ width:100%;
+ max-width:380px;
+ background:#fffdf5;
+ border-radius:18px;
+ padding:20px;
+ text-align:center;
+ border:3px dashed #e7d6a2;
+ box-shadow:0 12px 30px rgba(0,0,0,.15);
+ margin-top:140px;
+}
+h1{
+  font-family:'Great Vibes',cursive;
+  font-size:30px;
+  margin-bottom:10px;
+  color:#6c4b2f;
+  text-shadow:0 0 6px rgba(197,157,33,.25);
+}
+.subtitle{
+ font-size:15px;
+ color:#555;
+ margin-bottom:18px;
+ line-height:1.4;
+}
+button{
+ width:100%;
+ padding:14px;
+ font-size:16px;
+ border-radius:12px;
+ border:none;
+ cursor:pointer;
+ background:#222;
+ color:#fff;
+}
+.drop{
+ position:fixed;top:-40px;font-size:26px;opacity:.55;z-index:0;
+ animation:dropFall linear forwards;
+}
+@keyframes dropFall{to{transform:translateY(120vh);opacity:0;}}
+.overlay{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.45);
+ -webkit-backdrop-filter:blur(6px);
+ backdrop-filter:blur(6px);
+ display:none;
+ justify-content:center;
+ align-items:center;
+ z-index:50;
+}
+.panel{
+ background:#fffdf5;border-radius:18px;padding:20px;width:300px;text-align:center;
+ border:3px dashed #e7d6a2;
+ margin-top:-80px;
+}
+.scratch-wrapper{
+ position:relative;width:240px;height:190px;margin:0 auto;border-radius:12px;overflow:hidden;
+}
+#scratch.fadeout{transition:opacity 1s;opacity:0;}
+#proposalText{
+ position:absolute;top:6px;width:100%;font-size:34px;font-family:'Great Vibes';
+ color:#6c4b2f;
+ opacity:0;transition:.8s;
+}
+#proposalText.show{opacity:1;}
+#hintText{margin-bottom:8px;}
+#prize{
+ position:absolute;inset:0;display:flex;justify-content:center;align-items:center;font-size:64px;
+ opacity:.9;filter:drop-shadow(0 0 8px #d4af37);animation:ringPulse 2s infinite;
+}
+@keyframes ringPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+#scratch{position:absolute;inset:0;touch-action:none;}
+.answers{
+ margin-top:14px;display:flex;gap:10px;position:relative;
+ transition:all .6s ease;
+ overflow:hidden;
+}
+.answers.hidden{display:none;}
+#yesBtn{
+ flex:9;
+ background:linear-gradient(135deg,#d4af37,#f7e58b,#c59d21);
+ color:#fff;font-weight:700;
+ transition:all .6s ease;
+ position:relative;
+ z-index:2;
+}
+#noBtn{
+ flex:1;
+ background:#bdc3c7;color:#333;
+ transition:all .8s cubic-bezier(.25,.8,.25,1);
+ position:relative;
+ z-index:1;
+}
+@keyframes fallAway{
+ 0%{transform:translateY(0) rotate(0);opacity:1;}
+ 40%{transform:translateY(80px) rotate(20deg);}
+ 100%{transform:translateY(400px) rotate(60deg);opacity:0;}
+}
+.heart{
+ position:fixed;top:-40px;font-size:30px;opacity:.75;z-index:0;
+ animation:heartFall linear forwards;
+}
+@keyframes heartFall{to{transform:translateY(120vh);opacity:0;}}
+.pointer{
+ position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(180deg);
+ width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;
+ border-bottom:22px solid #222;z-index:4;
+}
+.proposalImg{
+ width:100%;
+ margin-top:10px;
+ border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="floatingBrand" id="brandX">Book Nook</div>
+
+<div class="screen" id="introScreen">
+ <h1>Hediyenizi güzel günlerde kullanın 🌸</h1>
+ <div class="subtitle">Bizleri tercih ettiğiniz için teşekkür ederiz!<br>Şimdi size özel promosyon ödülünüz için çarkı çevirebilirsiniz 🎉</div>
+ <button id="startBtn">Hemen Çevir</button>
+</div>
+
+<div class="screen" id="wheelScreen" style="display:none;">
+ <h1>Promosyon Ödül Çarkı</h1>
+ <div class="subtitle">Çarkı çevir, hediyeni öğren!</div>
+ <div style="position:relative;margin-bottom:20px;">
+   <canvas id="wheel" width="300" height="300"></canvas>
+   <div class="pointer"></div>
+ </div>
+ <button id="spinBtn">ÇARKI ÇEVİR</button>
+</div>
+
+<div class="overlay" id="overlay">
+ <div class="panel">
+  <div id="hintText">Sürpriz Hediye için alanı kazı!</div>
+  <div class="scratch-wrapper">
+   <div id="proposalText">Benimle evlenir misin?</div>
+   <div id="prize">💍</div>
+   <canvas id="scratch"></canvas>
+  </div>
+  <div class="answers hidden" id="answers">
+   <button id="yesBtn">EVET!</button>
+   <button id="noBtn">Hayır</button>
+  </div>
+ </div>
+</div>
+
+<div class="screen" id="finalScreen" style="display:none;">
+ <h1 style="font-size: 54px;">Evet!💍</h1>
+ <div class="subtitle"></div>
+ <img class="proposalImg" src="https://img.freepik.com/premium-vector/marriage-proposal-semi-flat-color-vector-characters_151150-8372.jpg">
+</div>
+
+<script>
+const startBtn=document.getElementById("startBtn");
+const introScreen=document.getElementById("introScreen");
+const wheelScreen=document.getElementById("wheelScreen");
+const overlay=document.getElementById("overlay");
+const finalScreen=document.getElementById("finalScreen");
+const answers=document.getElementById("answers");
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+
+let giftRain;
+giftRain = setInterval(()=>{
+ const icons=["🎁","✨","🎊","🎉","🎀","🎈","💍"];
+ const e=document.createElement("div");
+ e.className="drop";
+ e.textContent=icons[Math.floor(Math.random()*icons.length)];
+ e.style.left=Math.random()*100+"vw";
+ e.style.animationDuration=(3+Math.random()*3)+"s";
+ document.body.appendChild(e);
+ setTimeout(()=>e.remove(),5005);
+},220);
+
+startBtn.onclick=()=>{
+ introScreen.style.display="none";
+ wheelScreen.style.display="block";
+};
+
+function fixCanvas(c){
+ const r=window.devicePixelRatio||1;
+ const w=c.width,h=c.height;
+ c.width=w*r;c.height=h*r;
+ c.style.width=w+"px";c.style.height=h+"px";
+ const ctx=c.getContext("2d");ctx.scale(r,r);return ctx;
+}
+const canvas=document.getElementById("wheel");
+const ctx=fixCanvas(canvas);
+const R=150;
+const colors={"100 TL Kupon":"#B5EAD7","250 TL Kupon":"#C7CEEA","500 TL Kupon":"#FFDAC1","1000 TL Kupon":"#FFB7B2","SÜRPRİZ HEDİYE":"#F7E6A6"};
+const prizes=[
+ {text:"250 TL Kupon",weight:12},{text:"100 TL Kupon",weight:18},{text:"500 TL Kupon",weight:10},
+ {text:"250 TL Kupon",weight:12},{text:"100 TL Kupon",weight:18},{text:"SÜRPRİZ HEDİYE",weight:5},
+ {text:"100 TL Kupon",weight:18},{text:"250 TL Kupon",weight:12},{text:"1000 TL Kupon",weight:8},{text:"100 TL Kupon",weight:18}
+];
+const totalWeight=prizes.reduce((a,b)=>a+b.weight,0);
+let startAngle=0;
+function drawWheel(){
+ prizes.forEach(p=>{
+  const slice=(p.weight/totalWeight)*Math.PI*2;
+  ctx.beginPath();ctx.moveTo(R,R);ctx.fillStyle=colors[p.text];
+  ctx.arc(R,R,R,startAngle,startAngle+slice);ctx.fill();
+  ctx.save();ctx.translate(R,R);ctx.rotate(startAngle+slice/2);
+  ctx.fillStyle="#333";ctx.font="600 15px sans-serif";
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  ctx.fillText(p.text,R-20,0,R-20);
+  ctx.restore();startAngle+=slice;
+ });
+}
+drawWheel();
+
+spinBtn.onclick=()=>{
+ spinBtn.disabled=true;
+ const i=prizes.findIndex(p=>p.text.includes("SÜRPRİZ"));
+ const before=prizes.slice(0,i).reduce((a,b)=>a+b.weight,0);
+ const mid=((before+prizes[i].weight/2)/totalWeight)*360;
+ canvas.style.transition="transform 11.5s cubic-bezier(.04,.9,.15,1)";
+ canvas.style.transform=`rotate(${7.5*360+(90-mid)}deg)`;
+ setTimeout(()=>{overlay.style.display="flex";initScratch();},11500);
+};
+
+function initScratch(){
+ const sc=document.getElementById("scratch");
+ const sctx=fixCanvas(sc);
+ sc.width=240;sc.height=190;
+ sctx.fillStyle="#bbb";sctx.fillRect(0,0,sc.width,sc.height);
+ sctx.globalCompositeOperation="destination-out";
+ let drawing=false,revealed=false;
+
+ function draw(e){
+  if(!drawing)return;
+  const r=sc.getBoundingClientRect();
+  sctx.beginPath();
+  sctx.arc((e.touches?e.touches[0].clientX:e.clientX)-r.left,(e.touches?e.touches[0].clientY:e.clientY)-r.top,22,0,Math.PI*2);
+  sctx.fill();
+  check();
+ }
+ sc.addEventListener("pointerdown",()=>drawing=true);
+ sc.addEventListener("pointerup",()=>drawing=false);
+ sc.addEventListener("pointermove",draw);
+
+ function check(){
+  const data=sctx.getImageData(0,0,sc.width,sc.height).data;
+  let clear=0;
+  for(let i=3;i<data.length;i+=4)if(data[i]===0)clear++;
+  if(clear/(data.length/4)>0.7 && !revealed){
+   revealed=true;
+   if(navigator.vibrate) navigator.vibrate([80,60,80]);
+   sc.classList.add("fadeout");
+   setTimeout(()=>sctx.clearRect(0,0,sc.width,sc.height),1000);
+   proposalText.classList.add("show");
+   hintText.style.display="none";
+   answers.classList.remove("hidden");
+  }
+ }
+}
+
+yesBtn.onclick=()=>{
+ clearInterval(giftRain); // 🎁✨🎀🎈 yağmuru durduruldu
+ overlay.style.display="none";
+ wheelScreen.style.display="none";
+ finalScreen.style.display="block";
+ document.getElementById("brandX").style.display="none";
+ setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=["❤️","💖","💍","💘","💕"][Math.floor(Math.random()*4)];
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+ },220);
+};
+
+noBtn.onclick=()=>{
+  yesBtn.style.transform = "translateX(40px)";
+  yesBtn.style.flex = "10";
+  noBtn.style.animation = "fallAway .9s forwards";
+  setTimeout(()=>{noBtn.style.display="none";},900);
+  setTimeout(()=>{
+    yesBtn.style.transform = "translateX(0)";
+    yesBtn.style.margin = "0 auto";
+    yesBtn.style.flex = "1";
+    answers.style.justifyContent="center";
+  },900);
+};
+</script>
+</body>
+</html>
