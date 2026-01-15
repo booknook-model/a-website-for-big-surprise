@@ -94,13 +94,29 @@ button{
  z-index:50;
 }
 .panel{
- background:#fffdf5;border-radius:18px;padding:20px;width:300px;text-align:center;
+ background:#fffdf5;
+ border-radius:18px;
+ padding:20px;
+ width:min(300px, 90%);
+ text-align:center;
  border:3px dashed #e7d6a2;
  margin-top:-80px;
 }
 .scratch-wrapper{
- position:relative;width:240px;height:190px;margin:0 auto;border-radius:12px;overflow:hidden;
+ position:relative;
+ width:100%;
+ aspect-ratio:240/190;
+ margin:0 auto;
+ border-radius:12px;
+ overflow:hidden;
 }
+#scratch,
+#prize,
+#proposalText {
+ width:100% !important;
+ height:100% !important;
+}
+
 #scratch.fadeout{transition:opacity 1s;opacity:0;}
 #proposalText{
  position:absolute;top:6px;width:100%;font-size:34px;font-family:'Great Vibes';
@@ -114,7 +130,7 @@ button{
  opacity:.9;filter:drop-shadow(0 0 8px #d4af37);animation:ringPulse 2s infinite;
 }
 @keyframes ringPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-#scratch{position:absolute;inset:0;touch-action:none;}
+#scratch{position:absolute;inset:0;touch-action:none;border-radius:12px;}
 .answers{
  margin-top:14px;display:flex;gap:10px;position:relative;
  transition:all .6s ease;
@@ -155,6 +171,13 @@ button{
  width:100%;
  margin-top:10px;
  border-radius:12px;
+}
+
+/* --- Mobil uyum --- */
+@media(max-width: 420px){
+  h1{font-size:26px;}
+  .subtitle{font-size:14px;}
+  canvas#wheel{width:260px;height:260px;}
 }
 </style>
 </head>
@@ -210,9 +233,8 @@ const answers=document.getElementById("answers");
 const noBtn=document.getElementById("noBtn");
 const yesBtn=document.getElementById("yesBtn");
 
-let giftRain;
-giftRain = setInterval(()=>{
- const icons=["🎁","✨","🎊","🎉","🎀","🎈","💍"];
+let giftRain=setInterval(()=>{
+ const icons=["🎁","✨","🎊","🎉","🎀","🎈"];
  const e=document.createElement("div");
  e.className="drop";
  e.textContent=icons[Math.floor(Math.random()*icons.length)];
@@ -271,8 +293,11 @@ spinBtn.onclick=()=>{
 
 function initScratch(){
  const sc=document.getElementById("scratch");
+
+ sc.width=sc.clientWidth;
+ sc.height=sc.clientHeight;
+
  const sctx=fixCanvas(sc);
- sc.width=240;sc.height=190;
  sctx.fillStyle="#bbb";sctx.fillRect(0,0,sc.width,sc.height);
  sctx.globalCompositeOperation="destination-out";
  let drawing=false,revealed=false;
@@ -306,7 +331,7 @@ function initScratch(){
 }
 
 yesBtn.onclick=()=>{
- clearInterval(giftRain); // 🎁✨🎀🎈 yağmuru durduruldu
+ clearInterval(giftRain);
  overlay.style.display="none";
  wheelScreen.style.display="none";
  finalScreen.style.display="block";
