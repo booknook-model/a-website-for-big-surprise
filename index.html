@@ -298,7 +298,7 @@ function initScratch(){
   for(let i=3;i<data.length;i+=4)if(data[i]===0)clear++;
   if(clear/(data.length/4)>0.7 && !revealed){
    revealed=true;
-   if(navigator.vibrate) navigator.vibrate([150,100,150,100,150,100,150]);
+   if (navigator.vibrate) navigator.vibrate([300,100,120,100,120]);
    sc.classList.add("fadeout");
    setTimeout(()=>sctx.clearRect(0,0,sc.width,sc.height),1000);
    proposalText.classList.add("show");
@@ -340,4 +340,5 @@ noBtn.onclick=()=>{
 </script>
 </body>
 </html>
+
 
